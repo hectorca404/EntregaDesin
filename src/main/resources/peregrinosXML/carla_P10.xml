@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<carnet>
+    <id>10</id>
+    <fechaexp>31-01-2025</fechaexp>
+    <expedidoen>Parada C</expedidoen>
+    <peregrino>
+        <nombre>carla</nombre>
+        <nacionalidad>Canadá</nacionalidad>
+    </peregrino>
+    <hoy>31-01-2025</hoy>
+    <distanciatotal>0.0</distanciatotal>
+    <paradas>
+        <parada>
+            <orden>1</orden>
+            <nombre>Parada C</nombre>
+            <region>C</region>
+        </parada>
+    </paradas>
+    <estancias/>
+</carnet>

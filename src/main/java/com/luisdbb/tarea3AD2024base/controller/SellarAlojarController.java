@@ -38,20 +38,26 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 
+/**
+ * Controlador para la vista de sellado y alojamiento de peregrinos.
+ * Gestiona la interacción del usuario con los componentes gráficos,
+ * así como la lógica de negocio para registrar estancias y sellados.
+ */
+
 @Controller
 public class SellarAlojarController {
 
 	@FXML
-	private ComboBox<String> peregrinoComboBox;
+	public ComboBox<String> peregrinoComboBox;
 
 	@FXML
-	private CheckBox alojarCheckBox;
+	public CheckBox alojarCheckBox;
 
 	@FXML
-	private CheckBox vipCheckBox;
+	public CheckBox vipCheckBox;
 
 	@FXML
-	private Button confirmarButton;
+	public Button confirmarButton;
 
 	@FXML
 	private Button limpiarButton;
@@ -63,34 +69,38 @@ public class SellarAlojarController {
 	private Button ayudaButton;
 
 	@Autowired
-	private CredencialesService credencialesService;
+	public CredencialesService credencialesService;
 
 	@FXML
 	private ImageView ayudaIcon;
 
 	@Autowired
-	private PeregrinoService peregrinoService;
+	public PeregrinoService peregrinoService;
 	@Autowired
-	private SesionService sesionService;
+	public SesionService sesionService;
 	@Autowired
-	private ParadaService paradaService;
+	public ParadaService paradaService;
 
 	@Autowired
-	private EstanciaService estanciaService;
+	public EstanciaService estanciaService;
 
 	@Autowired
 	private AyudaService ayudaService;
 
 	@Autowired
-	private AlertsView alertsView;
+	public AlertsView alertsView;
 
 	@Autowired
-	private ValidacionesService validacionesService;
+	public ValidacionesService validacionesService;
 
 	@Lazy
 	@Autowired
 	private StageManager stageManager;
-
+	
+	/**
+     * Inicializa el controlador tras la carga del FXML.
+     * Configura iconos, listeners y acciones de los botones.
+     */
 	@FXML
 	public void initialize() {
 		ayudaIcon.setImage(new Image(getClass().getResourceAsStream("/images/help.png")));
@@ -114,7 +124,11 @@ public class SellarAlojarController {
 
 		configurarAtajos();
 	}
-
+	
+	 /**
+     * Configura los atajos de teclado para la vista.
+     * Incluye accesos rápidos como ENTER, F1, ESCAPE y Ctrl+L.
+     */
 	private void configurarAtajos() {
 		confirmarButton.sceneProperty().addListener((observable, oldScene, newScene) -> {
 			if (oldScene != null) {
@@ -146,22 +160,36 @@ public class SellarAlojarController {
 			}
 		});
 	}
-
+	
+	 /**
+     * Cambia la escena al menú de selección.
+     */
 	private void volverLogin() {
 		stageManager.switchScene(FxmlView.RESPARADA);
 	}
-
+	
+	/**
+     * Limpia el formulario de selección y checkboxes.
+     */
 	private void limpiarFormulario() {
 		peregrinoComboBox.getSelectionModel().clearSelection();
 		alojarCheckBox.setSelected(false);
 		vipCheckBox.setSelected(false);
 	}
-
+	
+	/**
+     * Carga la lista de credenciales de usuarios con perfil PEREGRINO.
+     *
+     * @return lista de credenciales de peregrinos
+     */
 	private List<Credenciales> cargarPeregrinos() {
 		List<Credenciales> credenciales = credencialesService.obtenerUsuarios(Perfil.PEREGRINO);
 		return credenciales;
 	}
-
+	
+	/**
+     * Carga los nombres de usuario de peregrinos en el ComboBox.
+     */
 	private void cargarPeregrinosComboBox() {
 		List<Credenciales> credenciales = cargarPeregrinos();
 
@@ -172,8 +200,13 @@ public class SellarAlojarController {
 
 		peregrinoComboBox.setItems(peregrinoNombres);
 	}
-
-	private void sellarAlojar() {
+	
+	/**
+     * Ejecuta el proceso de sellado y/o alojamiento para el peregrino seleccionado.
+     * Realiza validaciones previas y actualiza la información en base de datos.
+     * Muestra alertas en caso de error o éxito.
+     */
+	public void sellarAlojar() {
 		String nombreUsuarioSeleccionado = peregrinoComboBox.getSelectionModel().getSelectedItem();
 
 		if (nombreUsuarioSeleccionado == null) {

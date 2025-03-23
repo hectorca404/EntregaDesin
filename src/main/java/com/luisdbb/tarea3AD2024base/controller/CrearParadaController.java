@@ -26,29 +26,31 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
+
+
 @Controller
 public class CrearParadaController {
 
 	@FXML
-	private TextField responsableField;
+	public TextField responsableField;
 
 	@FXML
-	private TextField correoField;
+	public TextField correoField;
 
 	@FXML
-	private TextField nombreParadaField;
+	public TextField nombreParadaField;
 
 	@FXML
-	private TextField regionField;
+	public TextField regionField;
 
 	@FXML
-	private TextField usuarioField;
+	public TextField usuarioField;
 
 	@FXML
-	private PasswordField passwordField;
+	public PasswordField passwordField;
 
 	@FXML
-	private PasswordField confirmPasswordField;
+	public PasswordField confirmPasswordField;
 
 	@FXML
 	private Button crearButton;
@@ -70,17 +72,21 @@ public class CrearParadaController {
 	private StageManager stageManager;
 
 	@Autowired
-	private ParadaService paradaService;
+	public ParadaService paradaService;
 
 	@Autowired
 	private AyudaService ayudaService;
 
 	@Autowired
-	private ValidacionesService validacionesService;
+	public ValidacionesService validacionesService;
 
 	@Autowired
-	private AlertsView alertsView;
-
+	public AlertsView alertsView;
+	
+	/**
+	 * Configura atajos de teclado para la vista:
+	 * ENTER (crear parada), F1 (ayuda), ESCAPE (volver) y Ctrl+L (limpiar formulario).
+	 */
 	@FXML
 	public void initialize() {
 		regionField.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -97,7 +103,12 @@ public class CrearParadaController {
 
 		configurarAtajos();
 	}
-
+	
+	
+	/**
+	 * Configura atajos de teclado para la vista:
+	 * ENTER (crear parada), F1 (ayuda), ESCAPE (volver) y Ctrl+L (limpiar formulario).
+	 */
 	private void configurarAtajos() {
 		crearButton.sceneProperty().addListener((observable, oldScene, newScene) -> {
 			if (oldScene != null) {
@@ -129,8 +140,12 @@ public class CrearParadaController {
 			}
 		});
 	}
-
-	private void registrarParada() {
+	
+	/**
+	 * Valida los campos del formulario y registra una nueva parada en el sistema.
+	 * Muestra mensajes de error en caso de validaciones fallidas o excepciones.
+	 */
+	public void registrarParada() {
 		try {
 			String nombre = nombreParadaField.getText();
 			char region = regionField.getText().charAt(0);
@@ -180,6 +195,10 @@ public class CrearParadaController {
 			alertsView.mostrarError("Error", e.getMessage());
 		}
 	}
+	
+	/**
+	 * Limpia todos los campos del formulario de registro de parada.
+	 */
 
 	private void limpiarFormulario() {
 		responsableField.clear();
@@ -190,6 +209,10 @@ public class CrearParadaController {
 		passwordField.clear();
 		confirmPasswordField.clear();
 	}
+	
+	/**
+	 * Redirige al usuario de vuelta al menú del administrador.
+	 */
 
 	private void volverMenu() {
 		stageManager.switchScene(FxmlView.ADMIN);

@@ -21,6 +21,12 @@ import com.luisdbb.tarea3AD2024base.config.StageManager;
 import com.luisdbb.tarea3AD2024base.services.AyudaService;
 import com.luisdbb.tarea3AD2024base.view.FxmlView;
 
+
+/**
+ * Controlador de la vista de recuperación de contraseña.
+ * Permite al usuario regresar al login o acceder a la ayuda contextual.
+ * (La funcionalidad de recuperación aún no está implementada).
+ */
 @Controller
 public class ForgotPasswordController {
 
@@ -45,7 +51,11 @@ public class ForgotPasswordController {
 
 	@Autowired
 	private AyudaService ayudaService;
-
+	
+	/**
+     * Inicializa la vista de recuperación de contraseña.
+     * Configura los iconos, botones y atajos de teclado.
+     */
 	@FXML
 	public void initialize() {
 		ayudaIcon.setImage(new Image(getClass().getResourceAsStream("/images/help.png")));
@@ -55,6 +65,11 @@ public class ForgotPasswordController {
 
 		configurarAtajos();
 	}
+	
+	/**
+     * Configura atajos de teclado como ENTER (pendiente de implementación),
+     * F1 (ayuda) y ESCAPE (volver al login).
+     */
 
 	private void configurarAtajos() {
 		userField.sceneProperty().addListener((observable, oldScene, newScene) -> {
@@ -75,6 +90,10 @@ public class ForgotPasswordController {
 			}
 		});
 	}
+	
+	/**
+     * Redirige al usuario de vuelta a la vista de inicio de sesión.
+     */
 
 	private void volverLogin() {
 		stageManager.switchScene(FxmlView.PRINCIPAL);

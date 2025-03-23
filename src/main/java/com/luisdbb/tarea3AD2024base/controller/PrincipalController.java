@@ -29,6 +29,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 
+/**
+ * Controlador de la vista principal (pantalla de inicio de sesión).
+ * Gestiona la autenticación de usuarios y la redirección a la vista correspondiente
+ * según el rol del usuario autenticado.
+ * También permite acceder al registro de peregrinos y recuperación de contraseña.
+ */
 @Controller
 public class PrincipalController {
 
@@ -36,10 +42,10 @@ public class PrincipalController {
 	private ImageView logo;
 
 	@FXML
-	private TextField userLogField;
+	public TextField userLogField;
 
 	@FXML
-	private PasswordField passField;
+	public PasswordField passField;
 
 	@FXML
 	private Button passButton;
@@ -54,13 +60,13 @@ public class PrincipalController {
 	private ImageView ayudaIcon;
 
 	@FXML
-	private Button logButton;
+	public Button logButton;
 
 	@FXML
 	private Hyperlink forgotPass;
 
 	@FXML
-	private Hyperlink regisLink;
+	public Hyperlink regisLink;
 
 	private boolean contraseñaVisible = false;
 
@@ -80,6 +86,10 @@ public class PrincipalController {
 	@Autowired
 	private ValidacionesService validacionesService;
 
+	
+	  /**
+     * Inicializa la vista cargando imágenes, configurando eventos de botones y accesos directos.
+     */
 	@FXML
 	public void initialize() {
 		logo.setImage(new Image(getClass().getResourceAsStream("/images/logo2.png")));
@@ -96,6 +106,10 @@ public class PrincipalController {
 
 	}
 
+	
+	/**
+     * Configura accesos directos por teclado como ENTER (iniciar sesión) y F1 (ayuda).
+     */
 	private void configurarAtajos() {
 		userLogField.sceneProperty().addListener((observable, oldScene, newScene) -> {
 			if (newScene != null) {
@@ -113,8 +127,12 @@ public class PrincipalController {
 			}
 		});
 	}
-
-	private void iniciarSesion() {
+	
+	/**
+     * Inicia sesión validando las credenciales del usuario.
+     * Si son correctas, redirige a la vista correspondiente según el rol.
+     */
+	public void iniciarSesion() {
 		String username = userLogField.getText();
 		String password = passField.getText();
 
@@ -127,7 +145,13 @@ public class PrincipalController {
 		vistaSegunRol(credenciales.getPerfil(), credenciales);
 
 	}
-
+	
+	  /**
+     * Redirige al usuario a la vista correspondiente según su perfil (PEREGRINO, PARADA, ADMINISTRADOR).
+     *
+     * @param perfil Perfil del usuario autenticado.
+     * @param credenciales Credenciales completas del usuario.
+     */
 	private void vistaSegunRol(Perfil perfil, Credenciales credenciales) {
 		switch (perfil) {
 		case PEREGRINO -> {
@@ -147,7 +171,11 @@ public class PrincipalController {
 		}
 		}
 	}
-
+	
+	/**
+     * Activa o desactiva la visualización de la contraseña.
+     * Cambia el estado del campo de contraseña y el ícono correspondiente.
+     */
 	private void visualizarContraseña() {
 		if (contraseñaVisible) {
 			passField.setText(passField.getPromptText());
@@ -163,22 +191,41 @@ public class PrincipalController {
 			contraseñaVisible = true;
 		}
 	}
+	
+	/**
+     * Redirige al menú de administración.
+     */
 
 	private void menuAdmin() {
 		stageManager.switchScene(FxmlView.ADMIN);
 	}
-
+	
+	  /**
+     * Redirige al menú de usuario peregrino.
+     */
 	private void menuPeregrino() {
 		stageManager.switchScene(FxmlView.PEREGRINO);
 	}
+	
+	 /**
+     * Redirige al menú del responsable de parada.
+     */
 
 	private void menuParada() {
 		stageManager.switchScene(FxmlView.RESPARADA);
 	}
+	
+	/**
+     * Redirige a la vista de recuperación de contraseña.
+     */
 
 	private void forgotPass() {
 		stageManager.switchScene(FxmlView.FORGOTPASS);
 	}
+	
+	/**
+     * Redirige a la vista de registro de nuevo peregrino.
+     */
 
 	private void regPeregrino() {
 		stageManager.switchScene(FxmlView.REGPEREGRINO);

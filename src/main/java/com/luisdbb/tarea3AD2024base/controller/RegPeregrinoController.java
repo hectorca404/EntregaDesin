@@ -33,35 +33,41 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Controlador de la vista de registro de peregrinos.
+ * Gestiona el formulario de registro, la validación de datos,
+ * el registro en la base de datos y la carga de datos iniciales como paradas y nacionalidades.
+ */
 @Controller
 public class RegPeregrinoController {
 
 	@FXML
-	private TextField userField;
+	public TextField userField;
 
 	@FXML
-	private TextField nombreField;
+	public TextField nombreField;
 
 	@FXML
-	private TextField apellidoField;
+	public TextField apellidoField;
 
 	@FXML
-	private TextField correoField;
+	public TextField correoField;
 
 	@FXML
-	private ComboBox<String> nacionalidadComboBox;
+	public ComboBox<String> nacionalidadComboBox;
 
 	@FXML
-	private ComboBox<Parada> paradaInicioComboBox;
+	public ComboBox<Parada> paradaInicioComboBox;
 
 	@FXML
-	private PasswordField passwordField;
+	public PasswordField passwordField;
 
 	@FXML
-	private PasswordField confirmPasswordField;
+	public PasswordField confirmPasswordField;
 
 	@FXML
-	private Button registrarButton;
+	public Button registrarButton;
 
 	@FXML
 	private Button limpiarButton;
@@ -93,7 +99,11 @@ public class RegPeregrinoController {
 
 	@Autowired
 	private ValidacionesService validacionesService;
-
+	
+	/**
+     * Inicializa la vista cargando nacionalidades y paradas.
+     * También configura los eventos de botones e iconos, así como los atajos de teclado.
+     */
 	@FXML
 	public void initialize() {
 		cargarNacionalidades();
@@ -108,7 +118,11 @@ public class RegPeregrinoController {
 
 		configurarAtajos();
 	}
-
+	
+	/**
+     * Configura atajos de teclado como ENTER (registrar), F1 (ayuda),
+     * ESC (volver) y Ctrl+L (limpiar).
+     */
 	private void configurarAtajos() {
 		registrarButton.sceneProperty().addListener((observable, oldScene, newScene) -> {
 			if (newScene != null) {
@@ -137,22 +151,36 @@ public class RegPeregrinoController {
 			}
 		});
 	}
-
+	
+	/**
+     * Navega de vuelta a la vista principal.
+     */
 	private void volverLogin() {
 		stageManager.switchScene(FxmlView.PRINCIPAL);
 	}
-
+	
+    /**
+     * Carga y muestra las nacionalidades desde un archivo XML.
+     */
 	private void cargarNacionalidades() {
 		List<String> nacionalidades = obtenerNacionalidadesXML("/paises.xml");
 		nacionalidadComboBox.setItems(FXCollections.observableArrayList(nacionalidades));
 	}
-
+	
+	/**
+     * Carga y muestra las paradas disponibles desde el servicio.
+     */
 	private void cargarParadas() {
 		List<Parada> paradas = paradaService.obtenerTodasLasParadas();
 		paradaInicioComboBox.setItems(FXCollections.observableArrayList(paradas));
 	}
-
-	private void registrarPeregrino() {
+	
+	/**
+     * Registra un nuevo peregrino tras validar los datos del formulario.
+     * Si el registro es exitoso, limpia el formulario y muestra una alerta de éxito.
+     * Si ocurre un error, muestra la alerta correspondiente.
+     */
+	public void registrarPeregrino() {
 
 		String nombreUsuario = userField.getText();
 		if (validacionesService.existeUsuario(nombreUsuario)) {
@@ -206,7 +234,10 @@ public class RegPeregrinoController {
 		}
 
 	}
-
+	
+	/**
+     * Limpia todos los campos del formulario de registro.
+     */
 	private void limpiarFormulario() {
 		userField.clear();
 		nombreField.clear();
@@ -217,7 +248,13 @@ public class RegPeregrinoController {
 		passwordField.clear();
 		confirmPasswordField.clear();
 	}
-
+	
+	 /**
+     * Obtiene una lista de nacionalidades desde un archivo XML.
+     *
+     * @param rutaArchivo Ruta al archivo XML con los países.
+     * @return Lista de nombres de países extraídos del archivo.
+     */
 	private List<String> obtenerNacionalidadesXML(String rutaArchivo) {
 		List<String> nacionalidades = new ArrayList<>();
 		try {

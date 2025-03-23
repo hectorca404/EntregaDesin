@@ -18,6 +18,12 @@ import com.luisdbb.tarea3AD2024base.config.StageManager;
 import com.luisdbb.tarea3AD2024base.services.AyudaService;
 import com.luisdbb.tarea3AD2024base.view.FxmlView;
 
+
+/**
+ * Controlador de la vista del responsable de parada.
+ * Permite acceder a las funcionalidades de sellado/alojamiento,
+ * exportación de datos, cierre de sesión y ayuda contextual.
+ */
 @Controller
 public class ResParadaController {
 
@@ -51,7 +57,11 @@ public class ResParadaController {
 
 	@Autowired
 	private AyudaService ayudaService;
-
+	
+	/**
+     * Inicializa la vista, configurando iconos, eventos de botones
+     * y accesos directos por teclado.
+     */
 	@FXML
 	public void initialize() {
 		exportarIcon.setImage(new Image(getClass().getResourceAsStream("/images/exportar.png")));
@@ -67,6 +77,10 @@ public class ResParadaController {
 		configurarAtajo();
 
 	}
+	
+	/**
+     * Configura el atajo de teclado F1 para mostrar la ayuda contextual.
+     */
 
 	private void configurarAtajo() {
 		ayudaButton.sceneProperty().addListener((observable, oldScene, newScene) -> {
@@ -83,15 +97,25 @@ public class ResParadaController {
 			}
 		});
 	}
+	
+	 /**
+     * Cambia la escena a la vista principal para cerrar la sesión actual.
+     */
 
 	private void volverLogin() {
 		stageManager.switchScene(FxmlView.PRINCIPAL);
 	}
-
+	
+	/**
+     * Cambia la escena a la vista de sellado y alojamiento de peregrinos.
+     */
 	private void sellarAlojar() {
 		stageManager.switchScene(FxmlView.SELLARALOJAR);
 	}
-
+	
+	 /**
+     * Cambia la escena a la vista de exportación de datos de la parada.
+     */
 	private void exportarDatos() {
 		stageManager.switchScene(FxmlView.EXPORTPARADA);
 	}

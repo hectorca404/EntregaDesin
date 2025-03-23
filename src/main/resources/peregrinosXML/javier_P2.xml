@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<carnet>
+    <id>2</id>
+    <fechaexp>27-02-2025</fechaexp>
+    <expedidoen>Parada B</expedidoen>
+    <peregrino>
+        <nombre>javier</nombre>
+        <nacionalidad>Austria</nacionalidad>
+    </peregrino>
+    <hoy>07-03-2025</hoy>
+    <distanciatotal>10.0</distanciatotal>
+    <paradas>
+        <parada>
+            <orden>1</orden>
+            <nombre>Parada A</nombre>
+            <region>A</region>
+        </parada>
+        <parada>
+            <orden>2</orden>
+            <nombre>Parada B</nombre>
+            <region>B</region>
+        </parada>
+        <parada>
+            <orden>3</orden>
+            <nombre>Parada A</nombre>
+            <region>A</region>
+        </parada>
+    </paradas>
+    <estancias>
+        <estancia>
+            <id>2</id>
+            <fecha>27-02-2025</fecha>
+            <parada>Parada A</parada>
+        </estancia>
+        <estancia>
+            <id>3</id>
+            <fecha>28-02-2025</fecha>
+            <parada>Parada A</parada>
+            <vip>Sí</vip>
+        </estancia>
+    </estancias>
+</carnet>

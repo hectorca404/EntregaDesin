@@ -27,28 +27,26 @@ import com.luisdbb.tarea3AD2024base.view.FxmlView;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyEvent;
 
 @Controller
 public class EditPeregrinoController {
 
 	@FXML
-	private TextField nombreField;
+	public TextField nombreField;
 	@FXML
-	private TextField apellidoField;
+	public TextField apellidoField;
 	@FXML
-	private TextField correoField;
+	public TextField correoField;
 	@FXML
-	private ComboBox<String> nacionalidadComboBox;
+	public ComboBox<String> nacionalidadComboBox;
 	@FXML
-	private Button guardarButton;
+	public Button guardarButton;
 	@FXML
 	private Button limpiarButton;
 	@FXML
@@ -81,8 +79,13 @@ public class EditPeregrinoController {
 	@Autowired
 	private AlertsView alertsView;
 
-	private Peregrino peregrinoActual;
-
+	public Peregrino peregrinoActual;
+	
+	/**
+	 * Inicializa la vista de edición del peregrino.
+	 * Carga los datos actuales del usuario, nacionalidades disponibles,
+	 * y configura botones y accesos rápidos.
+	 */
 	@FXML
 	public void initialize() {
 		peregrinoActual = sesionService.getPeregrinoActual();
@@ -100,6 +103,11 @@ public class EditPeregrinoController {
 
 		configurarAtajos();
 	}
+	
+	/**
+	 * Configura los atajos de teclado:
+	 * ENTER (guardar), ESCAPE (volver), F1 (ayuda), Ctrl+L (limpiar).
+	 */
 
 	private void configurarAtajos() {
 		guardarButton.sceneProperty().addListener((observable, oldScene, newScene) -> {
@@ -132,6 +140,12 @@ public class EditPeregrinoController {
 			}
 		});
 	}
+	
+	/**
+	 * Carga los datos del peregrino en el formulario para su edición.
+	 *
+	 * @param peregrino El peregrino cuyos datos se cargarán.
+	 */
 
 	public void cargarPeregrino(Peregrino peregrino) {
 		nombreField.setText(peregrino.getNombre());
@@ -142,13 +156,21 @@ public class EditPeregrinoController {
 
 		nacionalidadComboBox.setValue(peregrino.getNacionalidad());
 	}
-
+	
+	/**
+	 * Carga las nacionalidades desde un archivo XML y las muestra en el ComboBox.
+	 */
 	private void cargarNacionalidades() {
 		List<String> nacionalidades = obtenerNacionalidadesXML("/paises.xml");
 		nacionalidadComboBox.setItems(FXCollections.observableArrayList(nacionalidades));
 	}
+	
+	/**
+	 * Valida y guarda los cambios realizados en el perfil del peregrino.
+	 * También actualiza el correo electrónico asociado.
+	 */
 
-	private void guardarCambios() {
+	public void guardarCambios() {
 		String nombre = nombreField.getText();
 		String apellido = apellidoField.getText();
 
@@ -179,6 +201,10 @@ public class EditPeregrinoController {
 		}
 
 	}
+	
+	/**
+	 * Limpia los campos del formulario de edición.
+	 */
 
 	private void limpiarFormulario() {
 		nombreField.clear();
@@ -186,10 +212,21 @@ public class EditPeregrinoController {
 		correoField.clear();
 		nacionalidadComboBox.getSelectionModel().clearSelection();
 	}
+	
+	/**
+	 * Vuelve al menú principal del peregrino.
+	 */
 
 	private void volverMenu() {
 		stageManager.switchScene(FxmlView.PEREGRINO);
 	}
+	
+	/**
+	 * Carga la lista de nacionalidades desde un archivo XML.
+	 *
+	 * @param rutaArchivo Ruta del archivo XML que contiene los países.
+	 * @return Lista de nombres de países extraídos del XML.
+	 */
 
 	private List<String> obtenerNacionalidadesXML(String rutaArchivo) {
 		List<String> nacionalidades = new ArrayList<>();

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<parada>
+    <id>1</id>
+    <nombre>Parada A</nombre>
+    <region>A</region>
+    <fecha_inicio>28/02/2025</fecha_inicio>
+    <fecha_fin>08/03/2025</fecha_fin>
+    <estancias>
+        <estancia>
+            <id>3</id>
+            <nombre_peregrino>javier</nombre_peregrino>
+            <fecha>28/02/2025</fecha>
+            <vip>Si</vip>
+        </estancia>
+        <estancia>
+            <id>4</id>
+            <nombre_peregrino>borja</nombre_peregrino>
+            <fecha>28/02/2025</fecha>
+            <vip>Si</vip>
+        </estancia>
+        <estancia>
+            <id>5</id>
+            <nombre_peregrino>juan</nombre_peregrino>
+            <fecha>28/02/2025</fecha>
+            <vip>Si</vip>
+        </estancia>
+        <estancia>
+            <id>6</id>
+            <nombre_peregrino>borja</nombre_peregrino>
+            <fecha>07/03/2025</fecha>
+            <vip>Si</vip>
+        </estancia>
+    </estancias>
+</parada>

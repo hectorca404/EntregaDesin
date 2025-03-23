@@ -46,7 +46,11 @@ public class AdminController {
 
 	@Autowired
 	private AyudaService ayudaService;
-
+	
+	/**
+	 * Inicializa la vista del administrador.
+	 * Configura iconos, acciones de botones y accesos rápidos del teclado.
+	 */
 	@FXML
 	public void initialize() {
 		crearParadaIcon.setImage(new Image(getClass().getResourceAsStream("/images/parada.png")));
@@ -59,6 +63,10 @@ public class AdminController {
 
 		configurarAtajo();
 	}
+	
+	/**
+	 * Configura el atajo de teclado F1 para mostrar la ayuda de la vista de administrador.
+	 */
 
 	private void configurarAtajo() {
 		ayudaButton.sceneProperty().addListener((observable, oldScene, newScene) -> {
@@ -72,11 +80,19 @@ public class AdminController {
 			}
 		});
 	}
+	
+
+	/**
+	 * Redirige a la vista para crear una nueva parada.
+	 */
 
 	private void crearParada() {
 		stageManager.switchScene(FxmlView.CREARPARADA);
 	}
-
+	
+	/**
+	 * Cierra la sesión del administrador y vuelve a la vista principal.
+	 */
 	private void cerrarSesion() {
 		stageManager.switchScene(FxmlView.PRINCIPAL);
 	}

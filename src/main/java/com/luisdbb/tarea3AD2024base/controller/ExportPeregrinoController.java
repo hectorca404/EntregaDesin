@@ -12,33 +12,58 @@ import com.luisdbb.tarea3AD2024base.services.SesionService;
 import com.luisdbb.tarea3AD2024base.view.AlertsView;
 import com.luisdbb.tarea3AD2024base.view.FxmlView;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.StackPane;
+import javafx.scene.web.WebView;
+import javafx.stage.Stage;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperPrintManager;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.export.JRGraphics2DExporter;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.export.SimpleExporterInput;
+import net.sf.jasperreports.export.SimpleGraphics2DExporterOutput;
+import net.sf.jasperreports.view.JasperViewer;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.stereotype.Controller;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.awt.Desktop;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import javax.imageio.ImageIO;
+import javax.sql.DataSource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -49,6 +74,12 @@ import javax.xml.transform.dom.DOMSource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+
+/**
+ * Controlador de la vista de exportación de datos del peregrino.
+ * Permite mostrar la información del carnet y del historial de paradas/estancias,
+ * así como exportar dicha información en formato XML e imagen.
+ */
 @Controller
 public class ExportPeregrinoController {
 
@@ -108,26 +139,38 @@ public class ExportPeregrinoController {
 
 	@Autowired
 	private AlertsView alertsView;
+	
+	@Autowired
+    private DataSource dataSource;
 
 	private Peregrino peregrinoActual;
-
+	
+	 /**
+     * Inicializa la vista cargando los datos del peregrino actual,
+     * sus estancias y configurando los botones y accesos rápidos.
+     */
 	@FXML
 	public void initialize() {
-
-		ayudaIcon.setImage(new Image(getClass().getResourceAsStream("/images/help.png")));
-
 		peregrinoActual = sesionService.getPeregrinoActual();
+		
+		ayudaIcon.setImage(new Image(getClass().getResourceAsStream("/images/help.png")));
 
 		cargarDatosPeregrino(peregrinoActual);
 		cargarParadasYEstancias(peregrinoActual);
 
 		volverMenuLink.setOnAction(event -> volverMenu());
-		exportarButton.setOnAction(event -> exportarPeregrinoXML(peregrinoActual));
+		exportarButton.setOnAction(event -> {
+		    exportarPeregrinoXML(peregrinoActual);
+		    exportarCarnetPeregrino(peregrinoActual);
+		});
 		ayudaButton.setOnAction(event -> ayudaService.mostrarAyuda("/help/ExportPeregrino.html"));
 
 		configurarAtajos();
 	}
-
+	
+	/**
+     * Configura atajos de teclado como ENTER (exportar), ESC (volver) y F1 (ayuda).
+     */
 	private void configurarAtajos() {
 		exportarButton.sceneProperty().addListener((observable, oldScene, newScene) -> {
 			if (oldScene != null) {
@@ -153,7 +196,12 @@ public class ExportPeregrinoController {
 			}
 		});
 	}
-
+	
+	/**
+     * Carga y muestra los datos personales y del carnet del peregrino.
+     *
+     * @param peregrino El peregrino cuyos datos se mostrarán.
+     */
 	private void cargarDatosPeregrino(Peregrino peregrino) {
 		nombreField.setText(peregrino.getNombre());
 		apellidoField.setText(peregrino.getApellido());
@@ -180,6 +228,13 @@ public class ExportPeregrinoController {
 		distanciaField.setEditable(false);
 		numeroVipsField.setEditable(false);
 	}
+	
+	/**
+     * Carga en la tabla las paradas visitadas por el peregrino, indicando
+     * si se ha alojado y si fue estancia VIP en cada una.
+     *
+     * @param peregrino El peregrino del cual se obtendrán las paradas y estancias.
+     */
 
 	private void cargarParadasYEstancias(Peregrino peregrino) {
 		List<Parada> paradas = peregrinoService.obtenerParadas(peregrino.getId());
@@ -203,6 +258,12 @@ public class ExportPeregrinoController {
 			return new SimpleStringProperty(esVip ? "Si" : "No");
 		});
 	}
+	
+	/**
+     * Exporta los datos del peregrino a un archivo XML con su historial de paradas y estancias.
+     *
+     * @param peregrino El peregrino que será exportado.
+     */
 
 	public void exportarPeregrinoXML(Peregrino peregrino) {
 		String pathExportacion = "src/main/resources/peregrinosXML/";
@@ -319,9 +380,84 @@ public class ExportPeregrinoController {
 			System.out.println("Error al exportar el peregrino XML: " + e.getMessage());
 		}
 	}
-
+	
+	/**
+     * Redirige al menú principal del peregrino.
+     */
 	@FXML
 	private void volverMenu() {
 		stageManager.switchScene(FxmlView.PEREGRINO);
 	}
+	
+	
+	  /**
+     * Exporta el carnet del peregrino como una imagen (.png) utilizando JasperReports.
+     * La imagen se guarda en disco y se muestra en una nueva ventana de la aplicación.
+     *
+     * @param peregrinoActual El peregrino del que se exportará el carnet.
+     */
+	// -----INFORME EXPORTA CAARNET NO INCRUSTADO
+	public void exportarCarnetPeregrino(Peregrino peregrinoActual) {
+		try {
+			File reporteFile = new ClassPathResource("CarnetInforme/Carnet.jasper").getFile();
+			JasperReport jasperReport = (JasperReport) JRLoader.loadObject(reporteFile);
+
+			Map<String, Object> parametros = new HashMap<>();
+			parametros.put("P_PEREGRINO_ID", peregrinoActual.getId().intValue());
+			parametros.put("NOMBRE", peregrinoActual.getNombre());
+			parametros.put("APELLIDO", peregrinoActual.getApellido());
+			parametros.put("NACIONALIDAD", peregrinoActual.getNacionalidad());
+			parametros.put("ID_CARNET", peregrinoActual.getCarnet().getId());
+			parametros.put("FECHA_EXPEDICION", peregrinoActual.getCarnet().getFechaexp());
+			parametros.put("DISTANCIA", peregrinoActual.getCarnet().getDistancia());
+			parametros.put("PARADA_INICIAL", peregrinoActual.getCarnet().getParadaInicio().getNombre());
+
+			Connection connection = DataSourceUtils.getConnection(dataSource);
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, connection);
+
+			BufferedImage image = (BufferedImage) JasperPrintManager.printPageToImage(jasperPrint, 0, 2.0f);
+
+			File carpetaExportacion = new File("src/main/resources/CarnetInforme");
+
+			String nombreImagen = peregrinoActual.getNombre().replaceAll(" ", "_") + "_P" + peregrinoActual.getId()
+					+ ".png";
+			File archivoImagen = new File(carpetaExportacion, nombreImagen);
+
+			ImageIO.write(image, "png", archivoImagen);
+
+			mostrarCarnetEnApp(archivoImagen);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("❌ Error al exportar carnet como imagen: " + e.getMessage());
+		}
+	}
+	
+	/**
+     * Muestra el carnet exportado como imagen dentro de la aplicación en una nueva ventana.
+     *
+     * @param archivoImagen Archivo de imagen generado a partir del informe Jasper.
+     */
+	private void mostrarCarnetEnApp(File archivoImagen) {
+		Platform.runLater(() -> {
+			try {
+				Stage stage = new Stage();
+				stage.setTitle("Carnet del Peregrino");
+
+				ImageView imageView = new ImageView(new Image(archivoImagen.toURI().toString()));
+				imageView.setFitWidth(600);
+				imageView.setPreserveRatio(true);
+
+				StackPane layout = new StackPane(imageView);
+
+				Scene scene = new Scene(layout, 800, 600);
+				stage.setScene(scene);
+				stage.showAndWait();
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.out.println("Error al mostrar la imagen en la aplicacion: " + e.getMessage());
+			}
+		});
+	}
+
 }

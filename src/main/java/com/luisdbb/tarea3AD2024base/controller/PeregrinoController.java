@@ -17,6 +17,12 @@ import com.luisdbb.tarea3AD2024base.services.AyudaService;
 import com.luisdbb.tarea3AD2024base.services.SesionService;
 import com.luisdbb.tarea3AD2024base.view.FxmlView;
 
+
+/**
+ * Controlador de la vista principal del usuario con perfil de peregrino.
+ * Permite al peregrino exportar sus datos, editar su información de contacto
+ * y cerrar sesión. También ofrece acceso a la ayuda contextual.
+ */
 @Controller
 public class PeregrinoController {
 
@@ -50,7 +56,11 @@ public class PeregrinoController {
 
 	@Autowired
 	private AyudaService ayudaService;
-
+	
+	/**
+     * Inicializa la vista del peregrino configurando íconos,
+     * acciones de los botones y atajos de teclado.
+     */
 	@FXML
 	public void initialize() {
 		exportarIcon.setImage(new Image(getClass().getResourceAsStream("/images/exportar.png")));
@@ -65,6 +75,10 @@ public class PeregrinoController {
 
 		configurarAtajo();
 	}
+	
+	 /**
+     * Configura el atajo de teclado F1 para mostrar la ayuda de la vista del peregrino.
+     */
 
 	private void configurarAtajo() {
 		ayudaButton.sceneProperty().addListener((observable, oldScene, newScene) -> {
@@ -81,14 +95,24 @@ public class PeregrinoController {
 			}
 		});
 	}
-
+	
+	/**
+     * Cierra la sesión actual y redirige al usuario a la vista principal de inicio de sesión.
+     */
 	private void volverLogin() {
 		stageManager.switchScene(FxmlView.PRINCIPAL);
 	}
-
+	
+	 /**
+     * Redirige al usuario a la vista de edición de sus datos de contacto.
+     */
 	private void editarPeregrino() {
 		stageManager.switchScene(FxmlView.EDITPEREGRINO);
 	}
+	
+	/**
+     * Redirige al usuario a la vista de exportación de sus propios datos.
+     */
 
 	private void exportarPeregrino() {
 
